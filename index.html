@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eSeva · Online Service Request</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #4f46e5;
+
+            /* dark theme (default) */
+            --page-bg: #030712;
+            --glow-1: rgba(59, 130, 246, 0.10);
+            --glow-2: rgba(79, 70, 229, 0.10);
+            --panel-bg: rgba(17, 24, 39, 0.75);
+            --panel-border: rgba(255, 255, 255, 0.05);
+            --text-heading: #e2e8f0;
+            --text-body: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-faint: #475569;
+            --input-bg: rgba(0, 0, 0, 0.4);
+            --input-border: rgba(255, 255, 255, 0.06);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --card-selected-bg: rgba(59, 130, 246, 0.08);
+            --pill-bg: rgba(255, 255, 255, 0.05);
+            --pill-border: rgba(255, 255, 255, 0.1);
+            --doc-section-bg: rgba(255, 255, 255, 0.02);
+            --doc-section-border: rgba(255, 255, 255, 0.05);
+            --doc-item-bg: rgba(0, 0, 0, 0.2);
+            --totalbar-bg: rgba(255, 255, 255, 0.05);
+            --totalbar-border: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="light"] {
+            --page-bg: #f1f5f9;
+            --glow-1: rgba(59, 130, 246, 0.12);
+            --glow-2: rgba(79, 70, 229, 0.10);
+            --panel-bg: rgba(255, 255, 255, 0.85);
+            --panel-border: rgba(15, 23, 42, 0.06);
+            --text-heading: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --text-faint: #94a3b8;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --input-border: rgba(15, 23, 42, 0.1);
+            --card-bg: rgba(15, 23, 42, 0.02);
+            --card-border: rgba(15, 23, 42, 0.08);
+            --card-selected-bg: rgba(59, 130, 246, 0.08);
+            --pill-bg: rgba(15, 23, 42, 0.04);
+            --pill-border: rgba(15, 23, 42, 0.08);
+            --doc-section-bg: rgba(15, 23, 42, 0.02);
+            --doc-section-border: rgba(15, 23, 42, 0.06);
+            --doc-item-bg: rgba(15, 23, 42, 0.03);
+            --totalbar-bg: rgba(15, 23, 42, 0.03);
+            --totalbar-border: rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--page-bg);
+            background-image:
+                radial-gradient(at 0% 0%, var(--glow-1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, var(--glow-2) 0px, transparent 50%);
+            min-height: 100vh;
+            padding: 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.9rem 1.25rem;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 1.25rem;
+            outline: none;
+            transition: all 0.3s ease;
+            color: var(--text-heading);
+            font-size: 0.95rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-faint);
+        }
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.12);
+        }
+        .form-input.error,
+        .form-select.error,
+        .form-textarea.error {
+            border-color: #f87171;
+            box-shadow: 0 0 20px rgba(248, 113, 113, 0.15);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label-required::after {
+            content: " *";
+            color: #f87171;
+        }
+
+        select.form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.25rem center;
+            background-size: 1rem;
+            padding-right: 3rem;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 800;
+        }
+        .btn-gradient:hover:not(:disabled) {
+            filter: brightness(1.1);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.35);
+            transform: translateY(-2px);
+        }
+        .btn-gradient:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .badge-success {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(79, 70, 229, 0.12);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #a5b4fc;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--pill-bg);
+            border: 1px solid var(--pill-border);
+            padding: 0.5rem 0.9rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        .theme-toggle:hover {
+            border-color: rgba(59, 130, 246, 0.35);
+        }
+        .theme-toggle svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Service Card */
+        .service-card {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1rem 1.25rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .service-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .service-card.selected {
+            border-color: var(--primary);
+            background: var(--card-selected-bg);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.08);
+        }
+        .service-card input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+            cursor: pointer;
+            pointer-events: none; /* toggled via label click only, avoids double-toggle */
+        }
+        .service-card .service-info {
+            flex: 1;
+        }
+        .service-card .service-name {
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+        .service-card .service-price {
+            font-weight: 700;
+            color: #93c5fd;
+            font-size: 0.9rem;
+        }
+
+        /* Document section */
+        .doc-section {
+            background: var(--doc-section-bg);
+            border: 1px solid var(--doc-section-border);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+        .doc-section .doc-title {
+            font-weight: 700;
+            color: #93c5fd;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .doc-section .doc-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: -0.35rem 0 0.75rem;
+            line-height: 1.4;
+        }
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--doc-item-bg);
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .doc-item label {
+            flex: 1;
+            min-width: 140px;
+            font-size: 0.85rem;
+            color: var(--text-body);
+        }
+        .doc-item input[type="file"] {
+            flex: 2;
+            min-width: 160px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--input-bg);
+            padding: 0.4rem 0.75rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--input-border);
+            cursor: pointer;
+        }
+        .doc-item input[type="text"],
+        .doc-item input[type="email"],
+        .doc-item input[type="tel"] {
+            flex: 2;
+            min-width: 160px;
+            font-size: 0.85rem;
+            color: var(--text-heading);
+            background: var(--input-bg);
+            padding: 0.5rem 0.9rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--input-border);
+            outline: none;
+        }
+        .doc-item input[type="text"]:focus,
+        .doc-item input[type="email"]:focus,
+        .doc-item input[type="tel"]:focus {
+            border-color: var(--primary);
+        }
+        .doc-item input[type="file"]::file-selector-button {
+            background: rgba(59, 130, 246, 0.2);
+            border: none;
+            color: #93c5fd;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            transition: 0.2s;
+        }
+        .doc-item input[type="file"]::file-selector-button:hover {
+            background: rgba(59, 130, 246, 0.35);
+        }
+
+        /* QR placeholder */
+        .qr-placeholder {
+            width: 160px;
+            height: 160px;
+            background: var(--card-bg);
+            border: 2px dashed var(--card-border);
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--text-faint);
+            font-size: 0.8rem;
+            gap: 0.5rem;
+        }
+        .qr-placeholder svg {
+            opacity: 0.5;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 640px) {
+            .glass-panel {
+                padding: 1.5rem 1rem !important;
+                border-radius: 1.75rem !important;
+            }
+            .service-card {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+            }
+            .doc-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .doc-item label {
+                min-width: auto;
+            }
+            .doc-item input[type="file"] {
+                min-width: auto;
+            }
+            .qr-placeholder {
+                width: 120px;
+                height: 120px;
+            }
+            .theme-toggle {
+                top: 0.85rem;
+                right: 0.85rem;
+                padding: 0.4rem 0.65rem;
+            }
+        }
+
+        /* Hide sections initially */
+        .doc-section.hidden {
+            display: none;
+        }
+
+        .error-msg {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        .error-msg.show {
+            display: block;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #93c5fd;
+        }
+
+        .text-slate-200-var { color: var(--text-heading); }
+        .text-slate-400-var { color: var(--text-muted); }
+        .text-slate-300-var { color: var(--text-body); }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-3xl mx-auto">
+
+        <!-- ─── GLASS PANEL ─── -->
+        <div class="glass-panel p-6 md:p-10 rounded-[2.5rem] relative overflow-hidden">
+
+            <!-- Background glows -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/15 blur-[100px] rounded-full"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/12 blur-[100px] rounded-full"></div>
+
+            <!-- Theme toggle -->
+            <button type="button" id="themeToggle" class="theme-toggle">
+                <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                <svg id="themeIconSun" class="hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <span id="themeLabel">Dark</span>
+            </button>
+
+            <div class="relative z-10">
+
+                <!-- ═══ BRAND HEADER ═══ -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4" style="background: var(--pill-bg); border: 1px solid var(--pill-border);">
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                        <span class="text-xs font-bold tracking-widest uppercase text-slate-400-var">Trusted · Since 2024</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+                        <span class="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                            eSeva
+                        </span>
+                    </h1>
+                    <p class="text-base font-medium mt-1 text-slate-400-var">Online Service Request · सरल · सुरक्षित · त्वरित</p>
+                </div>
+
+                <!-- ═══ FORM ═══ -->
+                <form id="serviceForm" novalidate class="space-y-6">
+
+                    <!-- ─── STEP 1: SERVICES ─── -->
+                    <div>
+                        <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-slate-200-var">
+                            <span class="w-1 h-6 rounded-full bg-blue-500"></span>
+                            1. सेवा चुनें · Select Service(s)
+                        </h2>
+                        <p class="text-sm mb-3 text-slate-400-var">एक या अधिक सेवाएँ चुनें (Select one or more)</p>
+
+                        <div class="space-y-2" id="servicesContainer">
+
+                            <!-- Income -->
+                            <label class="service-card" data-service="income">
+                                <input type="checkbox" value="income" class="service-checkbox" />
+                                <span class="service-info">
+                                    <span class="service-name">आय प्रमाणपत्र · Income Certificate</span>
+                                </span>
+                                <span class="service-price">₹30</span>
+                            </label>
+
+                            <!-- Caste -->
+                            <label class="service-card" data-service="caste">
+                                <input type="checkbox" value="caste" class="service-checkbox" />
+                                <span class="service-info">
+                                    <span class="service-name">जाति प्रमाणपत्र · Caste Certificate</span>
+                                </span>
+                                <span class="service-price">₹30</span>
+                            </label>
+
+                            <!-- Resident -->
+                            <label class="service-card" data-service="resident">
+                                <input type="checkbox" value="resident" class="service-checkbox" />
+                                <span class="service-info">
+                                    <span class="service-name">आवास प्रमाणपत्र · Resident Certificate</span>
+                                </span>
+                                <span class="service-price">₹30</span>
+                            </label>
+
+                            <!-- Scholarship -->
+                            <label class="service-card" data-service="scholarship">
+                                <input type="checkbox" value="scholarship" class="service-checkbox" />
+                                <span class="service-info">
+                                    <span class="service-name">🎓 छात्रवृत्ति फॉर्म भरना · Scholarship Form Fill</span>
+                                </span>
+                                <span class="service-price">₹79</span>
+                            </label>
+
+                        </div>
+
+                        <div id="serviceError" class="error-msg">कृपया कम से कम एक सेवा चुनें · Please select at least one service.</div>
+
+                        <!-- Total -->
+                        <div class="mt-4 flex items-center justify-between rounded-2xl px-5 py-3" style="background: var(--totalbar-bg); border: 1px solid var(--totalbar-border);">
+                            <span class="font-medium text-slate-400-var">कुल योग · Total</span>
+                            <span class="total-amount" id="totalDisplay">₹0</span>
+                        </div>
+                    </div>
+
+                    <!-- ─── STEP 2: DOCUMENT UPLOADS ─── -->
+                    <div>
+                        <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-slate-200-var">
+                            <span class="w-1 h-6 rounded-full bg-blue-500"></span>
+                            2. दस्तावेज़ अपलोड करें · Upload Documents
+                        </h2>
+                        <p class="text-sm mb-3 text-slate-400-var">प्रत्येक सेवा के लिए आवश्यक दस्तावेज़ · Documents required per service</p>
+
+                        <!-- ─── COMMON DOCUMENTS (always shown) ─── -->
+                        <div class="doc-section">
+                            <div class="doc-title">📄 सामान्य दस्तावेज़ · Common Documents</div>
+                            <div class="doc-item">
+                                <label>आधार कार्ड (फोटो कॉपी) · Aadhar Card</label>
+                                <input type="file" accept="image/*,.pdf" class="common-doc" data-key="aadhar" required />
+                            </div>
+                            <div class="doc-item">
+                                <label>पासपोर्ट साइज़ फोटो + हस्ताक्षर · Passport Photo + Sign</label>
+                                <input type="file" accept="image/*" class="common-doc" data-key="photo_sign" required />
+                            </div>
+                        </div>
+
+                        <!-- ─── INCOME DOCUMENTS ─── -->
+                        <div class="doc-section hidden" id="incomeDocs">
+                            <div class="doc-title">💰 आय प्रमाणपत्र हेतु साक्ष्य · Income Certificate Evidence</div>
+                            <div class="doc-subtitle">आय प्रमाणपत्र के साक्ष्य हेतु आवेदक/आवेदिका के माता-पिता का निम्नांकित अभिलेख मान्य होंगे</div>
+                            <div class="doc-item">
+                                <label>वेतन / पेंशन पर्ची · Salary / Pension Slip</label>
+                                <input type="file" accept="image/*,.pdf" class="income-doc" data-key="income_salary" />
+                            </div>
+                            <div class="doc-item">
+                                <label>आयकर रिटर्न · Income Tax Return</label>
+                                <input type="file" accept="image/*,.pdf" class="income-doc" data-key="income_itr" />
+                            </div>
+                            <div class="doc-item">
+                                <label>अन्यान्य अभिलेख · Other Records</label>
+                                <input type="file" accept="image/*,.pdf" class="income-doc" data-key="income_other" />
+                            </div>
+                        </div>
+
+                        <!-- ─── CASTE DOCUMENTS ─── -->
+                        <div class="doc-section hidden" id="casteDocs">
+                            <div class="doc-title">🧬 जाति प्रमाणपत्र हेतु साक्ष्य · Caste Certificate Evidence</div>
+                            <div class="doc-subtitle">जाति प्रमाणपत्र के साक्ष्य हेतु आवेदक/आवेदिका के पिता/पूर्वज का निम्नांकित अभिलेख मान्य होंगे</div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - खतियान · Revenue Record - Khatiyan</label>
+                                <input type="file" accept="image/*,.pdf" class="caste-doc" data-key="caste_khatiyan" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - दानपत्र · Revenue Record - Danpatra</label>
+                                <input type="file" accept="image/*,.pdf" class="caste-doc" data-key="caste_danpatra" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - भूमि संबंधी दस्तावेज · Land Documents</label>
+                                <input type="file" accept="image/*,.pdf" class="caste-doc" data-key="caste_land" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - भूमिहीनों को आवंटित जमीन · Land Allotment (Landless)</label>
+                                <input type="file" accept="image/*,.pdf" class="caste-doc" data-key="caste_allotment" />
+                            </div>
+                            <div class="doc-item">
+                                <label>अन्य राजस्व अभिलेख · Other Revenue Records</label>
+                                <input type="file" accept="image/*,.pdf" class="caste-doc" data-key="caste_other_revenue" />
+                            </div>
+                            <div class="doc-item">
+                                <label>स्थल निरीक्षण हेतु आग्रह (यदि अभिलेख उपलब्ध नहीं) · Site Inspection Request</label>
+                                <input type="file" accept="image/*,.pdf" class="caste-doc" data-key="caste_inspection" />
+                            </div>
+                        </div>
+
+                        <!-- ─── RESIDENT DOCUMENTS ─── -->
+                        <div class="doc-section hidden" id="residentDocs">
+                            <div class="doc-title">🏠 आवास प्रमाणपत्र हेतु साक्ष्य · Resident Certificate Evidence</div>
+                            <div class="doc-subtitle">आवास प्रमाणपत्र के साक्ष्य हेतु आवेदक/आवेदिका के माता-पिता/पूर्वज का निम्नांकित अभिलेख समुचित माने जायेंगे</div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - खतियान · Revenue Record - Khatiyan</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_khatiyan" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - दानपत्र · Revenue Record - Danpatra</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_danpatra" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - भूमि संबंधी दस्तावेज · Land Documents</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_land" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राजस्व अभिलेख - भूमिहीनों को आवंटित जमीन · Land Allotment (Landless)</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_allotment" />
+                            </div>
+                            <div class="doc-item">
+                                <label>अन्य राजस्व अभिलेख · Other Revenue Records</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_other_revenue" />
+                            </div>
+                            <div class="doc-item">
+                                <label>राशन कार्ड · Ration Card</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_ration" />
+                            </div>
+                            <div class="doc-item">
+                                <label>निर्वाचन पहचान पत्र · Voter ID</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_voter" />
+                            </div>
+                            <div class="doc-item">
+                                <label>विद्युत विपत्र · Electricity Bill</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_electricity" />
+                            </div>
+                            <div class="doc-item">
+                                <label>दूरभाष विपत्र · Telephone Bill</label>
+                                <input type="file" accept="image/*,.pdf" class="resident-doc" data-key="resident_telephone" />
+                            </div>
+                        </div>
+
+                        <!-- ─── SCHOLARSHIP DOCUMENTS ─── -->
+                        <div class="doc-section hidden" id="scholarshipDocs">
+                            <div class="doc-title">🎓 छात्रवृत्ति हेतु अनिवार्य दस्तावेज़ · Scholarship Required Documents</div>
+                            <div class="doc-item">
+                                <label>✅ आधार कार्ड · Aadhar Card</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_aadhar" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ पासपोर्ट साइज़ फोटो · Passport Size Photo</label>
+                                <input type="file" accept="image/*" class="scholarship-doc" data-key="scholarship_photo" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ बैंक पासबुक (आधार लिंक्ड बेहतर) · Bank Passbook</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_bank" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ आय प्रमाणपत्र · Income Certificate</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_income" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ जाति प्रमाणपत्र (SC/ST/OBC/EBC) · Caste Certificate</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_caste" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ आवास प्रमाणपत्र · Domicile/Resident Certificate</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_resident" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ पिछले वर्ष की मार्कशीट · Previous Year Marksheet</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_marksheet" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ Bonafide / Admission Receipt</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_bonafide" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ फीस रसीद (यदि मांगी जाए) · Fee Receipt</label>
+                                <input type="file" accept="image/*,.pdf" class="scholarship-doc" data-key="scholarship_fee" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ छात्र का मोबाइल नंबर · Student Mobile Number</label>
+                                <input type="tel" placeholder="10-अंकों का मोबाइल नंबर" class="scholarship-text" data-key="scholarship_mobile" />
+                            </div>
+                            <div class="doc-item">
+                                <label>✅ छात्र की ईमेल आईडी · Student Email ID</label>
+                                <input type="email" placeholder="[email protected]" class="scholarship-text" data-key="scholarship_email" />
+                            </div>
+                        </div>
+
+                        <div id="docError" class="error-msg">कृपया सभी आवश्यक दस्तावेज़ अपलोड करें · Please upload all required documents.</div>
+                    </div>
+
+                    <!-- ─── STEP 3: PAYMENT ─── -->
+                    <div>
+                        <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-slate-200-var">
+                            <span class="w-1 h-6 rounded-full bg-blue-500"></span>
+                            3. भुगतान · Payment
+                        </h2>
+                        <p class="text-sm mb-3 text-slate-400-var">QR कोड स्कैन करें या नीचे दिए गए विकल्प का उपयोग करें</p>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-2xl" style="background: var(--totalbar-bg); border: 1px solid var(--totalbar-border);">
+                            <div class="qr-placeholder">
+                                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="2" width="7" height="7" rx="1" />
+                                    <rect x="15" y="2" width="7" height="7" rx="1" />
+                                    <rect x="2" y="15" width="7" height="7" rx="1" />
+                                    <rect x="15" y="15" width="7" height="7" rx="1" />
+                                    <line x1="6" y1="9" x2="6" y2="15" />
+                                    <line x1="9" y1="6" x2="15" y2="6" />
+                                    <line x1="18" y1="9" x2="18" y2="15" />
+                                    <line x1="9" y1="18" x2="15" y2="18" />
+                                    <line x1="6" y1="6" x2="6" y2="6" stroke-width="2" />
+                                    <line x1="18" y1="18" x2="18" y2="18" stroke-width="2" />
+                                </svg>
+                                <span>QR Code <br /><span class="text-xs">(यहाँ अपना QR लगाएँ)</span></span>
+                            </div>
+                            <div class="flex-1 text-center sm:text-left">
+                                <p class="font-medium text-slate-300-var">कुल भुगतान · Total Payment</p>
+                                <p class="total-amount text-2xl" id="paymentTotal">₹0</p>
+                                <p class="text-xs mt-1 text-slate-400-var">UPI / Google Pay / PhonePe स्कैन करें</p>
+                                <button type="button" id="qrUploadBtn" class="mt-2 text-xs text-blue-400 hover:text-blue-300 underline transition-colors">
+                                    + QR कोड अपलोड करें (वैकल्पिक)
+                                </button>
+                                <input type="file" id="qrUpload" accept="image/*" class="hidden" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ─── STEP 4: EXTRA HELP ─── -->
+                    <div>
+                        <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-slate-200-var">
+                            <span class="w-1 h-6 rounded-full bg-blue-500"></span>
+                            4. अतिरिक्त सहायता · Additional Help
+                        </h2>
+                        <textarea id="extraHelp" rows="3" class="form-textarea" placeholder="कोई विशेष अनुरोध या अतिरिक्त जानकारी · Any special request or extra info..."></textarea>
+                    </div>
+
+                    <!-- ─── SUBMIT ─── -->
+                    <button type="submit" id="submitBtn" class="btn-gradient w-full text-white py-5 rounded-3xl flex items-center justify-center gap-4 text-lg mt-4">
+                        <span id="btnText">सबमिट करें · Submit Request</span>
+                        <span id="loaderIcon" class="loader hidden"></span>
+                    </button>
+
+                </form>
+
+                <!-- ─── SUCCESS ─── -->
+                <div id="successBox" class="hidden mt-8 p-6 rounded-2xl border border-indigo-400/20 fade-in" style="background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(79,70,229,0.05));">
+                    <div class="flex items-start gap-4">
+                        <div class="p-2 bg-indigo-400/10 rounded-xl shrink-0">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="badge-success mb-1">✓ आवेदन सफलतापूर्वक जमा · Application Submitted</div>
+                            <p id="successMessage" class="text-sm leading-relaxed mt-1 text-slate-300-var">
+                                आपका अनुरोध प्राप्त हो गया है। हम जल्द ही संपर्क करेंगे।
+                            </p>
+                            <button id="resetBtn" class="mt-4 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
+                                + नया आवेदन · New Application
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /relative -->
+        </div><!-- /glass-panel -->
+
+        <!-- Footer -->
+        <div class="text-center text-xs mt-6 text-slate-400-var" style="opacity:0.7;">
+            © 2026 eSeva · All rights reserved · सभी अधिकार सुरक्षित
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── Theme toggle ───
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIconMoon = document.getElementById('themeIconMoon');
+            const themeIconSun = document.getElementById('themeIconSun');
+            const themeLabel = document.getElementById('themeLabel');
+            const htmlEl = document.documentElement;
+
+            function applyTheme(theme) {
+                htmlEl.setAttribute('data-theme', theme);
+                if (theme === 'light') {
+                    themeIconMoon.classList.add('hidden');
+                    themeIconSun.classList.remove('hidden');
+                    themeLabel.textContent = 'Light';
+                } else {
+                    themeIconSun.classList.add('hidden');
+                    themeIconMoon.classList.remove('hidden');
+                    themeLabel.textContent = 'Dark';
+                }
+            }
+
+            themeToggle.addEventListener('click', function() {
+                const current = htmlEl.getAttribute('data-theme') || 'dark';
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            });
+
+            // ─── DOM refs ───
+            const form = document.getElementById('serviceForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const loaderIcon = document.getElementById('loaderIcon');
+            const successBox = document.getElementById('successBox');
+            const successMessage = document.getElementById('successMessage');
+            const resetBtn = document.getElementById('resetBtn');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const paymentTotal = document.getElementById('paymentTotal');
+            const serviceError = document.getElementById('serviceError');
+            const docError = document.getElementById('docError');
+            const qrUploadBtn = document.getElementById('qrUploadBtn');
+            const qrUpload = document.getElementById('qrUpload');
+
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const commonDocs = document.querySelectorAll('.common-doc');
+
+            // Service price map
+            const prices = {
+                income: 30,
+                caste: 30,
+                resident: 30,
+                scholarship: 79
+            };
+
+            // ─── Update total ───
+            function updateTotal() {
+                let total = 0;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) total += prices[cb.value] || 0;
+                });
+                const formatted = '₹' + total;
+                totalDisplay.textContent = formatted;
+                paymentTotal.textContent = formatted;
+                return total;
+            }
+
+            // ─── Toggle document sections ───
+            function toggleDocSections() {
+                const selected = [];
+                checkboxes.forEach(cb => {
+                    if (cb.checked) selected.push(cb.value);
+                });
+
+                // Hide all
+                ['incomeDocs', 'casteDocs', 'residentDocs', 'scholarshipDocs'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+
+                // Show selected (common documents section stays visible always)
+                if (selected.includes('income')) document.getElementById('incomeDocs').classList.remove('hidden');
+                if (selected.includes('caste')) document.getElementById('casteDocs').classList.remove('hidden');
+                if (selected.includes('resident')) document.getElementById('residentDocs').classList.remove('hidden');
+                if (selected.includes('scholarship')) document.getElementById('scholarshipDocs').classList.remove('hidden');
+
+                updateTotal();
+            }
+
+            // ─── Service card toggle ───
+            // NOTE: the checkbox has pointer-events:none, so every click on the
+            // label (card) is handled in exactly one place below — this avoids
+            // the double-toggle bug where the native label-click and a manual
+            // JS toggle fought each other and cancelled the selection out.
+            document.querySelectorAll('.service-card').forEach(card => {
+                const cb = card.querySelector('.service-checkbox');
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    cb.checked = !cb.checked;
+                    cb.dispatchEvent(new Event('change'));
+                });
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.closest('.service-card').classList.add('selected');
+                    } else {
+                        this.closest('.service-card').classList.remove('selected');
+                    }
+                    toggleDocSections();
+                    docError.classList.remove('show');
+                    serviceError.classList.remove('show');
+                });
+            });
+
+            // ─── QR upload button ───
+            qrUploadBtn.addEventListener('click', () => qrUpload.click());
+
+            // ─── Validate form ───
+            function validateForm() {
+                let valid = true;
+
+                // 1. At least one service selected
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                if (!anyChecked) {
+                    serviceError.classList.add('show');
+                    valid = false;
+                } else {
+                    serviceError.classList.remove('show');
+                }
+
+                // 2. Common docs (Aadhar + Photo/Sign) - must have files
+                let allCommonFilled = true;
+                commonDocs.forEach(input => {
+                    if (!input.files || input.files.length === 0) {
+                        allCommonFilled = false;
+                        input.classList.add('error');
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+                if (!allCommonFilled) {
+                    docError.textContent = 'कृपया आधार कार्ड और फोटो+हस्ताक्षर अपलोड करें · Please upload Aadhar and Photo+Sign.';
+                    docError.classList.add('show');
+                    valid = false;
+                } else {
+                    docError.classList.remove('show');
+                }
+
+                return valid;
+            }
+
+            // ─── Clear errors on input change ───
+            commonDocs.forEach(inp => {
+                inp.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) {
+                        this.classList.remove('error');
+                        docError.classList.remove('show');
+                    }
+                });
+            });
+
+            // ─── Submit handler with fetch ───
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Validate
+                if (!validateForm()) {
+                    const firstError = document.querySelector('.form-input.error, .form-select.error, .form-textarea.error, input.error');
+                    if (firstError) firstError.focus();
+                    return;
+                }
+
+                // Gather selected services
+                const selectedServices = [];
+                checkboxes.forEach(cb => {
+                    if (cb.checked) selectedServices.push({
+                        name: cb.value,
+                        price: prices[cb.value] || 0
+                    });
+                });
+
+                const total = selectedServices.reduce((sum, s) => sum + s.price, 0);
+
+                // ─── Build multipart FormData so actual file bytes reach n8n ───
+                // (Not JSON — JSON can only carry text, so previously only file
+                // *names* were sent. FormData sends the real file content, and
+                // n8n's Webhook node auto-parses this into binary + json data.)
+                const formData = new FormData();
+
+                formData.append('services', JSON.stringify(selectedServices));
+                formData.append('total', String(total));
+                formData.append('extraHelp', document.getElementById('extraHelp').value.trim());
+                formData.append('timestamp', new Date().toISOString());
+
+                // Common documents
+                commonDocs.forEach(inp => {
+                    const key = inp.dataset.key || 'file';
+                    if (inp.files && inp.files.length > 0) {
+                        formData.append(key, inp.files[0], inp.files[0].name);
+                    }
+                });
+
+                // Service-specific documents
+                document.querySelectorAll('.income-doc, .caste-doc, .resident-doc, .scholarship-doc').forEach(inp => {
+                    const key = inp.dataset.key || 'file';
+                    if (inp.files && inp.files.length > 0) {
+                        formData.append(key, inp.files[0], inp.files[0].name);
+                    }
+                });
+
+                // Scholarship text fields (mobile / email)
+                document.querySelectorAll('.scholarship-text').forEach(inp => {
+                    const key = inp.dataset.key || 'field';
+                    formData.append(key, inp.value.trim());
+                });
+
+                // QR upload
+                if (qrUpload.files && qrUpload.files.length > 0) {
+                    formData.append('qrCode', qrUpload.files[0], qrUpload.files[0].name);
+                }
+
+                // UI: loading
+                submitBtn.disabled = true;
+                btnText.textContent = 'जमा हो रहा है…';
+                loaderIcon.classList.remove('hidden');
+                successBox.classList.add('hidden');
+
+                try {
+                    // 🔁 REPLACE WITH YOUR n8n WEBHOOK URL
+                    const webhookUrl = 'http://localhost:5678/webhook-test/94e1ce83-eaa0-4802-98b1-a3ad37a958a8';
+
+                    // NOTE: do NOT set a Content-Type header manually — the
+                    // browser sets 'multipart/form-data; boundary=...' itself,
+                    // and setting it by hand breaks the upload.
+                    const response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    let responseText = await response.text();
+                    let responseData;
+                    try {
+                        responseData = JSON.parse(responseText);
+                    } catch (_) {
+                        responseData = { message: responseText };
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(responseData.message || `Server error (${response.status})`);
+                    }
+
+                    const serviceNames = selectedServices.map(s => s.name.charAt(0).toUpperCase() + s.name.slice(1)).join(', ');
+                    const serverMsg = responseData.message || 'आपका अनुरोध प्राप्त हो गया है। हम जल्द ही संपर्क करेंगे।';
+                    successMessage.textContent =
+                        `✅ सेवा(एँ): ${serviceNames} | कुल: ₹${total}\n${serverMsg}`;
+
+                    successBox.classList.remove('hidden');
+                    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                } catch (error) {
+                    alert(`❌ कनेक्शन विफल! \n${error.message}\n\nकृपया जाँचें कि n8n चल रहा है और CORS सक्षम है।`);
+                    console.error('n8n webhook error:', error);
+                } finally {
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'सबमिट करें · Submit Request';
+                    loaderIcon.classList.add('hidden');
+                }
+            });
+
+            // ─── Reset ───
+            resetBtn.addEventListener('click', function() {
+                form.reset();
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    cb.closest('.service-card').classList.remove('selected');
+                });
+                document.querySelectorAll('input[type="file"]').forEach(inp => {
+                    inp.value = '';
+                    inp.classList.remove('error');
+                });
+                document.querySelectorAll('.scholarship-text').forEach(inp => inp.value = '');
+                document.getElementById('extraHelp').value = '';
+                successBox.classList.add('hidden');
+                serviceError.classList.remove('show');
+                docError.classList.remove('show');
+                ['incomeDocs', 'casteDocs', 'residentDocs', 'scholarshipDocs'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+                updateTotal();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // ─── Handle remove error on file select ───
+            document.querySelectorAll('input[type="file"]').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    this.classList.remove('error');
+                });
+            });
+
+            // ─── Init ───
+            toggleDocSections();
+
+        })();
+    </script>
+
+</body>
+</html>
